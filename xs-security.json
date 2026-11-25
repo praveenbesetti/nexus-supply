@@ -1,0 +1,77 @@
+{
+  "xsappname": "nexus-supply",
+  "tenant-mode": "shared",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Admin",
+      "description": "Administrator access for managing suppliers and purchase orders"
+    },
+    {
+      "name": "$XSAPPNAME.User",
+      "description": "Standard user access for creating purchase orders"
+    },
+    {
+      "name": "$XSAPPNAME.ProcurementManager",
+      "description": "Can approve purchase orders"
+    },
+    {
+      "name": "$XSAPPNAME.ProcurementManager",
+      "description": "ProcurementManager"
+    },
+    {
+      "name": "$XSAPPNAME.mtcallback",
+      "description": "Subscription via SaaS Registry",
+      "grant-as-authority-to-apps": [
+        "$XSAPPNAME(application,sap-provisioning,tenant-onboarding)"
+      ]
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "Admin",
+      "description": "Administrator Role Template",
+      "scope-references": [
+        "$XSAPPNAME.Admin",
+        "$XSAPPNAME.User"
+      ]
+    },
+    {
+      "name": "Manager",
+      "description": "Procurement Manager Role",
+      "scope-references": [
+        "$XSAPPNAME.ProcurementManager"
+      ]
+    },
+    {
+      "name": "User",
+      "description": "Standard User Role Template",
+      "scope-references": [
+        "$XSAPPNAME.User"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "NexusSupply_Admin",
+      "description": "Administrator Role Collection for NexusSupply",
+      "role-template-references": [
+        "$XSAPPNAME.Admin"
+      ]
+    },
+    {
+      "name": "NexusSupply_User",
+      "description": "Standard User Role Collection for NexusSupply",
+      "role-template-references": [
+        "$XSAPPNAME.User"
+      ]
+    },
+    {
+      "name": "NexusSupply_Manager",
+      "description": "Standard Procurement Manager Role Collection for NexusSupply",
+      "role-template-references": [
+        "$XSAPPNAME.ProcurementManager"
+      ]
+    }
+  ],
+  "attributes": []
+}

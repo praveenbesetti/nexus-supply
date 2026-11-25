@@ -1,0 +1,13 @@
+{
+  "name": "nexus-supply-procurement-ui",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:cf": "ui5 build --clean-dest --include-task=generateCachebusterInfo && cd dist && bestzip nexussupplyui.zip *"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^3.11.14",
+    "bestzip": "^2.2.1",
+    "ui5-task-zipper": "^3.7.0"
+  }
+}

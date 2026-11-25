@@ -1,0 +1,36 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m">
+    <Table
+        id="productsTable"
+        items="{vm>/products}"
+        growing="true"
+        noDataText="No products are available."
+        class="dataTable">
+        <headerToolbar>
+            <Toolbar>
+                <Title text="Product catalog" level="H2"/>
+                <ToolbarSpacer/>
+                <SearchField width="10rem" placeholder="Search products" liveChange="onSearchProducts"/>
+                <Button text="Bulk import" icon="sap-icon://upload" press="onOpenBulkProducts"/>
+                <Button text="Add product" icon="sap-icon://add" type="Emphasized" press="onOpenCreateProduct"/>
+            </Toolbar>
+        </headerToolbar>
+        <columns>
+            <Column><Text text="Product"/></Column>
+            <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Supplier"/></Column>
+            <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Description"/></Column>
+            <Column hAlign="End"><Text text="Unit price"/></Column>
+        </columns>
+        <items>
+            <ColumnListItem>
+                <cells>
+                    <ObjectIdentifier title="{vm>name}" text="{vm>ID}"/>
+                    <Text text="{vm>supplier/name}"/>
+                    <Text text="{vm>description}" maxLines="2"/>
+                    <ObjectNumber number="{path: 'vm>price', formatter: '.formatAmount'}"/>
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</core:FragmentDefinition>

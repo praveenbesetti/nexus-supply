@@ -1,0 +1,132 @@
+<mvc:View
+    controllerName="com.nexussupply.procurementportal.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core">
+    <f:DynamicPage id="procurementPage" class="procurementPage" height="100%" toggleHeaderOnTitleClick="false">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <VBox>
+                        <Title text="Procurement" level="H1"/>
+                        <Text text="Manage purchase orders, suppliers, and products"/>
+                    </VBox>
+                </f:heading>
+                <f:actions>
+                    <Button
+                        text="Refresh"
+                        icon="sap-icon://refresh"
+                        type="Transparent"
+                        press="onRefresh"/>
+                    <Button
+                        text="Local sign-in"
+                        icon="sap-icon://key"
+                        type="Transparent"
+                        press="onOpenSignIn"/>
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+        <f:header>
+            <f:DynamicPageHeader pinnable="false">
+                <HBox class="metricRow" wrap="Wrap">
+                    <VBox class="metricCard">
+                        <Label text="Purchase orders"/>
+                        <ObjectNumber number="{vm>/metrics/orderCount}"/>
+                        <Text text="All statuses"/>
+                    </VBox>
+                    <VBox class="metricCard">
+                        <Label text="Awaiting approval"/>
+                        <ObjectNumber number="{vm>/metrics/pendingCount}" state="Warning"/>
+                        <Text text="Draft or submitted"/>
+                    </VBox>
+                    <VBox class="metricCard">
+                        <Label text="Suppliers"/>
+                        <ObjectNumber number="{vm>/metrics/supplierCount}"/>
+                        <Text text="Available in catalog"/>
+                    </VBox>
+                    <VBox class="metricCard">
+                        <Label text="Products"/>
+                        <ObjectNumber number="{vm>/metrics/productCount}"/>
+                        <Text text="Available in catalog"/>
+                    </VBox>
+                </HBox>
+            </f:DynamicPageHeader>
+        </f:header>
+        <f:content>
+            <VBox class="contentArea">
+                <MessageStrip
+                    text="{vm>/loadError}"
+                    type="Error"
+                    showIcon="true"
+                    showCloseButton="true"
+                    visible="{= !!${vm>/loadError} }"
+                    class="sapUiSmallMarginBottom"/>
+                <IconTabBar
+                    id="workspaceTabs"
+                    selectedKey="orders"
+                    expandable="false"
+                    class="workspaceTabs">
+                    <items>
+                        <IconTabFilter
+                            key="orders"
+                            text="Purchase orders"
+                            icon="sap-icon://cart"
+                            count="{vm>/metrics/orderCount}">
+                            <core:Fragment
+                                id="purchaseOrdersFragment"
+                                fragmentName="com.nexussupply.procurementportal.view.fragments.PurchaseOrders"
+                                type="XML"/>
+                        </IconTabFilter>
+                        <IconTabFilter
+                            key="suppliers"
+                            text="Suppliers"
+                            icon="sap-icon://supplier"
+                            count="{vm>/metrics/supplierCount}">
+                            <core:Fragment
+                                id="suppliersFragment"
+                                fragmentName="com.nexussupply.procurementportal.view.fragments.Suppliers"
+                                type="XML"/>
+                        </IconTabFilter>
+                        <IconTabFilter
+                            key="products"
+                            text="Products"
+                            icon="sap-icon://product"
+                            count="{vm>/metrics/productCount}">
+                            <core:Fragment
+                                id="productsFragment"
+                                fragmentName="com.nexussupply.procurementportal.view.fragments.Products"
+                                type="XML"/>
+                        </IconTabFilter>
+                    </items>
+                </IconTabBar>
+            </VBox>
+        </f:content>
+        <f:dependents>
+            <core:Fragment
+                id="createPurchaseOrderDialog"
+                fragmentName="com.nexussupply.procurementportal.view.fragments.CreatePurchaseOrder"
+                type="XML"/>
+            <core:Fragment
+                id="purchaseOrderDetails"
+                fragmentName="com.nexussupply.procurementportal.view.fragments.PurchaseOrderDetails"
+                type="XML"/>
+            <core:Fragment
+                id="createSupplierDialog"
+                fragmentName="com.nexussupply.procurementportal.view.fragments.CreateSupplier"
+                type="XML"/>
+            <core:Fragment
+                id="createProductDialog"
+                fragmentName="com.nexussupply.procurementportal.view.fragments.CreateProduct"
+                type="XML"/>
+            <core:Fragment
+                id="bulkImportDialog"
+                fragmentName="com.nexussupply.procurementportal.view.fragments.BulkImport"
+                type="XML"/>
+            <core:Fragment
+                id="signInDialogFragment"
+                fragmentName="com.nexussupply.procurementportal.view.fragments.SignIn"
+                type="XML"/>
+        </f:dependents>
+    </f:DynamicPage>
+</mvc:View>

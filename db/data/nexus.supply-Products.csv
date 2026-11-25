@@ -1,0 +1,3 @@
+ID,name,description,price,supplier_ID
+prod-001,Industrial Sensor X1,High-precision IoT sensor for assembly lines,299.99,sup-001
+prod-002,Heavy Duty Actuator,Hydraulic component for heavy machinery,1250.50,sup-002

@@ -1,0 +1,33 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:form="sap.ui.layout.form">
+    <Dialog
+        id="supplierDialog"
+        title="Add supplier"
+        contentWidth="34rem"
+        stretchOnPhone="true">
+        <content>
+            <VBox class="dialogContent">
+                <form:SimpleForm
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanL="3"
+                    labelSpanM="3">
+                    <Label text="Supplier name" required="true"/>
+                    <Input value="{vm>/newSupplier/name}" maxLength="100" placeholder="Supplier name"/>
+                    <Label text="Email"/>
+                    <Input value="{vm>/newSupplier/email}" type="Email" maxLength="100" placeholder="name@example.com"/>
+                    <Label text="Country"/>
+                    <Input value="{vm>/newSupplier/country}" maxLength="50" placeholder="Country"/>
+                </form:SimpleForm>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button text="Save supplier" type="Emphasized" press="onSaveSupplier"/>
+        </beginButton>
+        <endButton>
+            <Button text="Cancel" press="onCloseSupplier"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

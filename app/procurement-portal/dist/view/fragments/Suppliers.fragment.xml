@@ -1,0 +1,34 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m">
+    <Table
+        id="suppliersTable"
+        items="{vm>/suppliers}"
+        growing="true"
+        noDataText="No suppliers are available."
+        class="dataTable">
+        <headerToolbar>
+            <Toolbar>
+                <Title text="Supplier directory" level="H2"/>
+                <ToolbarSpacer/>
+                <SearchField width="10rem" placeholder="Search suppliers" liveChange="onSearchSuppliers"/>
+                <Button text="Bulk import" icon="sap-icon://upload" press="onOpenBulkSuppliers"/>
+                <Button text="Add supplier" icon="sap-icon://add" type="Emphasized" press="onOpenCreateSupplier"/>
+            </Toolbar>
+        </headerToolbar>
+        <columns>
+            <Column><Text text="Supplier"/></Column>
+            <Column><Text text="Email"/></Column>
+            <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Country"/></Column>
+        </columns>
+        <items>
+            <ColumnListItem>
+                <cells>
+                    <ObjectIdentifier title="{vm>name}" text="{vm>ID}"/>
+                    <Link text="{vm>email}" href="mailto:{vm>email}"/>
+                    <Text text="{vm>country}"/>
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</core:FragmentDefinition>

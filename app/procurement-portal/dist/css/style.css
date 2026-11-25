@@ -1,0 +1,84 @@
+html,
+body,
+#content,
+#app-root,
+#app-root > div,
+.sapUiComponentContainer,
+.sapUiComponentContainer > div,
+.sapUiComponentContainer > div > div,
+.sapUiView {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+.sapUiView {
+    display: block;
+}
+
+.procurementPage {
+    background: var(--sapBackgroundColor);
+}
+
+.contentArea {
+    padding: 1rem 1.5rem 2rem;
+}
+
+.metricRow {
+    gap: 0.75rem;
+    padding: 0.5rem 0 1rem;
+}
+
+.metricCard {
+    box-sizing: border-box;
+    min-width: 10rem;
+    flex: 1 1 10rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--sapGroup_ContentBorderColor);
+    border-radius: 0.75rem;
+    background: var(--sapGroup_ContentBackground);
+    box-shadow: var(--sapContent_Shadow0);
+}
+
+.metricCard .sapMObjectNumber {
+    margin: 0.35rem 0;
+}
+
+.workspaceTabs {
+    border-radius: 0.75rem;
+    background: var(--sapGroup_ContentBackground);
+}
+
+.dataTable {
+    padding: 0 0.5rem 0.75rem;
+}
+
+.dialogContent {
+    padding: 1rem 1.5rem;
+}
+
+.lineItemsToolbar {
+    padding: 0;
+}
+
+.lineItemsTable {
+    margin-top: 0.5rem;
+}
+
+.orderTotal {
+    gap: 0.5rem;
+    padding: 1rem 0.25rem 0;
+}
+
+@media (max-width: 600px) {
+    .contentArea {
+        padding: 0.5rem;
+    }
+
+    .metricCard {
+        min-width: calc(50% - 0.5rem);
+    }
+}

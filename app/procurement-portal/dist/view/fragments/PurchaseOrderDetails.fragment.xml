@@ -1,0 +1,53 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m">
+    <Dialog
+        id="detailsDialog"
+        title="Purchase order"
+        contentWidth="48rem"
+        stretchOnPhone="true">
+        <content>
+            <VBox class="dialogContent">
+                <ObjectHeader
+                    title="{vm>/selectedOrder/orderNumber}"
+                    intro="{vm>/selectedOrder/supplier/name}"
+                    number="{path: 'vm>/selectedOrder/totalAmount', formatter: '.formatAmount'}"
+                    numberUnit="Total">
+                    <statuses>
+                        <ObjectStatus
+                            text="{vm>/selectedOrder/status}"
+                            state="{path: 'vm>/selectedOrder/status', formatter: '.formatStatusState'}"/>
+                    </statuses>
+                </ObjectHeader>
+                <Title text="Order items" level="H3" class="sapUiSmallMarginTop"/>
+                <Table items="{vm>/selectedItems}" noDataText="This order has no items.">
+                    <columns>
+                        <Column><Text text="Product"/></Column>
+                        <Column hAlign="End"><Text text="Quantity"/></Column>
+                        <Column hAlign="End"><Text text="Line total"/></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{vm>product/name}" text="{vm>product_ID}"/>
+                                <Text text="{vm>quantity}" textAlign="End"/>
+                                <ObjectNumber number="{path: 'vm>itemTotal', formatter: '.formatAmount'}"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button
+                text="Approve"
+                type="Accept"
+                icon="sap-icon://accept"
+                visible="{= ${vm>/canApprovePurchaseOrders} &amp;&amp; ${vm>/selectedOrder/status} !== 'Approved' }"
+                press="onApprovePurchaseOrder"/>
+        </beginButton>
+        <endButton>
+            <Button text="Close" press="onCloseDetails"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,109 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:form="sap.ui.layout.form">
+    <Dialog
+        id="createDialog"
+        title="Create purchase order"
+        contentWidth="56rem"
+        contentHeight="auto"
+        stretchOnPhone="true"
+        busy="{vm>/saving}">
+        <content>
+            <VBox class="dialogContent">
+                <MessageStrip
+                    text="The order is created as a draft, then activated after its items are added."
+                    type="Information"
+                    showIcon="true"
+                    class="sapUiSmallMarginBottom"/>
+                <form:SimpleForm
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    columnsL="2"
+                    columnsM="2"
+                    labelSpanL="3"
+                    labelSpanM="3"
+                    class="sapUiSmallMarginBottom">
+                    <Label text="Order number" required="true"/>
+                    <Input value="{vm>/newOrder/orderNumber}" maxLength="20" placeholder="e.g. PO-2026-001"/>
+                    <Label text="Supplier" required="true"/>
+                    <Select
+                        id="supplierSelect"
+                        selectedKey="{vm>/newOrder/supplier_ID}"
+                        items="{path: 'vm>/suppliers', templateShareable: false}"
+                        change="onSupplierChange"
+                        forceSelection="false"
+                        required="true"
+                        width="100%">
+                        <core:Item key="{vm>ID}" text="{vm>name}"/>
+                    </Select>
+                </form:SimpleForm>
+                <OverflowToolbar class="lineItemsToolbar">
+                    <Title text="Order items" level="H3"/>
+                    <ToolbarSpacer/>
+                    <Button
+                        text="Add product"
+                        icon="sap-icon://add"
+                        enabled="{= !!${vm>/newOrder/supplier_ID} }"
+                        press="onAddLine"/>
+                </OverflowToolbar>
+                <Table
+                    id="draftItemsTable"
+                    items="{vm>/draftItems}"
+                    noDataText="Add at least one product."
+                    class="lineItemsTable">
+                    <columns>
+                        <Column width="45%"><Text text="Product"/></Column>
+                        <Column width="18%" hAlign="End"><Text text="Quantity"/></Column>
+                        <Column width="18%" hAlign="End"><Text text="Unit price"/></Column>
+                        <Column width="19%" hAlign="End"><Text text="Line total"/></Column>
+                        <Column width="3rem"/>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Select
+                                    selectedKey="{vm>product_ID}"
+                                    items="{path: 'vm>/availableProducts', templateShareable: false}"
+                                    change="onLineProductChange"
+                                    forceSelection="false"
+                                    required="true"
+                                    enabled="{= !!${vm>/newOrder/supplier_ID} }"
+                                    width="100%">
+                                    <core:Item key="{vm>ID}" text="{vm>name}"/>
+                                </Select>
+                                <Input
+                                    value="{vm>quantity}"
+                                    type="Number"
+                                    min="1"
+                                    width="100%"
+                                    textAlign="End"
+                                    change="onItemQuantityChange"/>
+                                <Text text="{path: 'vm>unitPrice', formatter: '.formatAmount'}" textAlign="End"/>
+                                <ObjectNumber number="{path: 'vm>itemTotal', formatter: '.formatAmount'}"/>
+                                <Button
+                                    icon="sap-icon://delete"
+                                    type="Transparent"
+                                    tooltip="Remove item"
+                                    press="onRemoveLine"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+                <HBox class="orderTotal" justifyContent="End" alignItems="Center">
+                    <Label text="Order total"/>
+                    <ObjectNumber
+                        number="{path: 'vm>/draftTotal', formatter: '.formatAmount'}"
+                        emphasized="true"
+                        class="sapUiSmallMarginBegin"/>
+                </HBox>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button text="Create draft" type="Emphasized" press="onSavePurchaseOrder"/>
+        </beginButton>
+        <endButton>
+            <Button text="Cancel" press="onCloseCreate"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

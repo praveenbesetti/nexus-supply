@@ -1,0 +1,165 @@
+_schema-version: '3.2.0'
+ID: nexus-supply
+version: 1.0.0
+description: NexusSupply procurement (multitenant, full stack)
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+
+modules:
+  # 1) Backend: CAP OData service
+  - name: nexus-supply-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      memory: 512M
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: nexus-supply-auth
+      - name: nexus-supply-service-manager
+      - name: mtx-api
+        properties:
+          CDS_MULTITENANCY_SIDECAR_URL: ~{mtx-url}
+
+  # 2) MTX sidecar: creates and deletes tenant databases
+  - name: nexus-supply-mtx
+    type: nodejs
+    path: gen/mtx/sidecar
+    parameters:
+      instances: 1
+      memory: 512M
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm
+    properties:
+      SUBSCRIPTION_URL: ~{app-api/app-protocol}://\${tenant-subdomain}-~{app-api/app-uri}
+    provides:
+      - name: mtx-api
+        properties:
+          mtx-url: ${default-url}
+    requires:
+      - name: nexus-supply-auth
+      - name: nexus-supply-service-manager
+      - name: nexus-supply-saas-registry
+      - name: app-api
+
+  # 3) Approuter: the single public entry point
+  - name: nexus-supply-app-router
+    type: nodejs
+    path: app/app-router
+    parameters:
+      instances: 1
+      memory: 256M
+      disk-quota: 512M
+      buildpack: nodejs_buildpack
+      keep-existing-routes: true
+    properties:
+      TENANT_HOST_PATTERN: '^(.*)-${default-uri}'
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+    requires:
+      - name: nexus-supply-auth
+      - name: nexus-supply-html5-repo-runtime
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api
+          url: ~{srv-url}
+          forwardAuthToken: true
+
+  # 4) UI app (built into a zip, not run)
+  - name: procurement-portal-ui
+    type: html5
+    path: app/procurement-portal
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      build-result: dist
+      supported-platforms: []
+
+  # 5) Content uploader: pushes the zip into the HTML5 repo
+  - name: procurement-portal-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: nexus-supply-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: procurement-portal-ui
+          artifacts:
+            - nexus-supply-procurement.zip
+          target-path: resources/
+
+resources:
+  # Login / security (shared = multitenant)
+  - name: nexus-supply-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+
+  # Replaces the old hdi-container: one HDI container per tenant
+  - name: nexus-supply-service-manager
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: service-manager
+      service-plan: container
+
+  # Subscription handling
+  - name: nexus-supply-saas-registry
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: saas-registry
+      service-plan: application
+      config:
+        xsappname: nexus-supply
+        displayName: NexusSupply Procurement
+        description: Multi-tenant procurement and supplier workspace
+        category: Procurement
+        appUrls:
+          getDependencies: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/dependencies
+          onSubscription: ~{mtx-api/mtx-url}/-/cds/saas-provisioning/tenant/{tenantId}
+          onSubscriptionAsync: false
+          onUnSubscriptionAsync: false
+          callbackTimeoutMillis: 300000
+    requires:
+      - name: mtx-api
+
+  # UI storage
+  - name: nexus-supply-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+
+  # UI reader (used by the approuter)
+  - name: nexus-supply-html5-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime

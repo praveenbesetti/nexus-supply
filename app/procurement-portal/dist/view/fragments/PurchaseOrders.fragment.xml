@@ -1,0 +1,48 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m">
+    <Table
+        id="ordersTable"
+        items="{vm>/purchaseOrders}"
+        growing="true"
+        growingScrollToLoad="true"
+        noDataText="No purchase orders yet. Create one to get started."
+        class="dataTable">
+        <headerToolbar>
+            <Toolbar>
+                <Title text="Purchase orders" level="H2"/>
+                <ToolbarSpacer/>
+                <SearchField
+                    width="12rem"
+                    placeholder="Search purchase orders"
+                    liveChange="onSearchOrders"/>
+                <Button text="Bulk import" icon="sap-icon://upload" press="onOpenBulkPurchaseOrders"/>
+                <Button
+                    text="Create order"
+                    icon="sap-icon://add"
+                    type="Emphasized"
+                    press="onOpenCreate"/>
+            </Toolbar>
+        </headerToolbar>
+        <columns>
+            <Column><Text text="Order"/></Column>
+            <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Supplier"/></Column>
+            <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End"><Text text="Total"/></Column>
+            <Column hAlign="Center"><Text text="Status"/></Column>
+            <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Created"/></Column>
+        </columns>
+        <items>
+            <ColumnListItem type="Navigation" press="onOpenPurchaseOrder">
+                <cells>
+                    <ObjectIdentifier title="{vm>orderNumber}" text="{vm>ID}"/>
+                    <Text text="{vm>supplier/name}"/>
+                    <ObjectNumber number="{path: 'vm>totalAmount', formatter: '.formatAmount'}"/>
+                    <ObjectStatus
+                        text="{vm>status}"
+                        state="{path: 'vm>status', formatter: '.formatStatusState'}"/>
+                    <Text text="{path: 'vm>createdAt', formatter: '.formatDate'}"/>
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</core:FragmentDefinition>

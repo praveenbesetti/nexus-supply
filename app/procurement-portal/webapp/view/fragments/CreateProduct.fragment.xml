@@ -1,0 +1,42 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:form="sap.ui.layout.form">
+    <Dialog
+        id="productDialog"
+        title="Add product"
+        contentWidth="38rem"
+        stretchOnPhone="true">
+        <content>
+            <VBox class="dialogContent">
+                <form:SimpleForm
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanL="3"
+                    labelSpanM="3">
+                    <Label text="Product name" required="true"/>
+                    <Input value="{vm>/newProduct/name}" maxLength="100" placeholder="Product name"/>
+                    <Label text="Description"/>
+                    <TextArea value="{vm>/newProduct/description}" rows="3" maxLength="500" growing="true"/>
+                    <Label text="Unit price" required="true"/>
+                    <Input value="{vm>/newProduct/price}" type="Number" min="0.01" placeholder="0.00"/>
+                    <Label text="Supplier" required="true"/>
+                    <Select
+                        selectedKey="{vm>/newProduct/supplier_ID}"
+                        items="{path: 'vm>/suppliers', templateShareable: false}"
+                        forceSelection="false"
+                        required="true"
+                        width="100%">
+                        <core:Item key="{vm>ID}" text="{vm>name}"/>
+                    </Select>
+                </form:SimpleForm>
+            </VBox>
+        </content>
+        <beginButton>
+            <Button text="Save product" type="Emphasized" press="onSaveProduct"/>
+        </beginButton>
+        <endButton>
+            <Button text="Cancel" press="onCloseProduct"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>
